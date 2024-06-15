@@ -19,3 +19,7 @@ app.use((req, res, next) => {
 initializeDatabase();
 
 app.use("/uploads", express.static(path.resolve(__dirname, "../uploads")));
+
+app.listen(port, () => {
+  console.log(`Server running on port: ${port}`);
+});

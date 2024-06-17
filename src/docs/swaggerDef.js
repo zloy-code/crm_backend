@@ -16,6 +16,30 @@ const swaggerOptions = {
     ],
   },
   apis: ["./src/routes/*.js"], // Adjust the path to match your actual route files
+  components: {
+    schemas: {
+      Product: {
+        type: "object",
+        properties: {
+          id: { type: "integer", example: 1 },
+          name: { type: "string", example: "Product Name" },
+        },
+      },
+      Modification: {
+        type: "object",
+        properties: {
+          id: { type: "integer", example: 1 },
+          productId: { type: "integer", example: 1 },
+          price_per_can: { type: "number", example: 10.99 },
+          price_per_unit: { type: "number", example: 6000 },
+          quantity: { type: "number", example: 55 },
+          quantity_per_can: { type: "number", example: 12 },
+          can_quantity: { type: "number", example: 2 },
+          liter: { type: "number", example: 0.5 },
+        },
+      },
+    },
+  },
 };
 
 module.exports = swaggerOptions;

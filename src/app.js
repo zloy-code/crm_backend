@@ -9,7 +9,9 @@ const swaggerOptions = require("./docs/swaggerDef");
 const productsRoutes = require("./routes/productsRoutes");
 const { Product, Modification } = require("./db/associations");
 const modificationRoutes = require("./routes/modificationRoutes");
-dotenv.config();
+const userRouter = require("./routes/userRouter");
+const authRouter = require("./routes/auth");
+require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -37,6 +39,8 @@ console.log(swaggerSpec);
 
 app.use("/products", productsRoutes);
 app.use("/modifications", modificationRoutes);
+app.use("/users", userRouter);
+app.use("/auth", authRouter.router);
 
 app.get("/", (req, res) => {
   res.send("Welcome to my API!");

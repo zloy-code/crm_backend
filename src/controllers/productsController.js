@@ -63,23 +63,32 @@ const deleteProduct = async (req, res) => {
   try {
     const product = await Products.findByPk(id);
     if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({ error: "Product not found" });
     }
 
     if (product.image) {
-      fs.unlinkSync(
-        path.join(__dirname, "../../uploads/upload_products", product.image)
+      const imagePath = path.join(
+        __dirname,
+        "..",
+        "..",
+        "uploads",
+        product.image
       );
+
+      // Check if file exists before trying to delete it
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      } else {
+        console.warn(`File not found: ${imagePath}`);
+      }
     }
 
-    await product.destroy();
+    await Products.destroy({ where: { id } });
 
     res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ message: "An error occurred while deleting the product." });
+    console.error("Error deleting product:", error);
+    res.status(500).json({ error: error.message });
   }
 };
 

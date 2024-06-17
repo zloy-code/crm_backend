@@ -12,7 +12,7 @@
 /tmp/
 
 # Ignore environment-specific files
-.env
+
 
 # Ignore IDE-specific files
 .idea/

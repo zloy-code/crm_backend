@@ -1,4 +1,4 @@
-const port = process.env.port || 3000;
+const port = process.env.PORT || 3000;
 
 const swaggerOptions = {
   swaggerDefinition: {
@@ -32,9 +32,9 @@ const swaggerOptions = {
           productId: { type: "integer", example: 1 },
           price_per_can: { type: "number", example: 10.99 },
           price_per_unit: { type: "number", example: 6000 },
-          quantity: { type: "number", example: 55 },
-          quantity_per_can: { type: "number", example: 12 },
-          can_quantity: { type: "number", example: 2 },
+          quantity: { type: "integer", example: 55 },
+          quantity_per_can: { type: "integer", example: 12 },
+          can_quantity: { type: "integer", example: 2 },
           liter: { type: "number", example: 0.5 },
         },
       },

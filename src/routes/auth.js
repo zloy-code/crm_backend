@@ -1,3 +1,13 @@
+const express = require("express");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const User = require("../models/userModels"); // Adjust the path as needed
+const dotenv = require("dotenv");
+
+dotenv.config(); // Load environment variables from .env file
+
+const router = express.Router();
+
 /**
  * @swagger
  * components:
@@ -46,19 +56,8 @@
  *               properties:
  *                 message:
  *                   type: string
- */
-
-/**
- * @swagger
- * /any-protected-route:
- *   get:
- *     summary: Example protected route
- *     tags: [Protected]
- *     security:
- *       - BearerAuth: []
- *     responses:
- *       '200':
- *         description: Success response
+ *       '500':
+ *         description: Internal Server Error
  *         content:
  *           application/json:
  *             schema:
@@ -68,55 +67,6 @@
  *                   type: string
  */
 
-const express = require("express");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const User = require("../models/userModels"); // Adjust the path as needed
-
-const router = express.Router();
-
-/**
- * @swagger
- * /auth/login:
- *   post:
- *     summary: Login a user
- *     tags: [Authentication]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               login:
- *                 type: string
- *               password:
- *                 type: string
- *             required:
- *               - login
- *               - password
- *     responses:
- *       '200':
- *         description: Login successful
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 token:
- *                   type: string
- *       '400':
- *         description: Invalid login or password
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- */
 router.post("/login", async (req, res) => {
   const { login, password } = req.body;
 
@@ -134,9 +84,13 @@ router.post("/login", async (req, res) => {
     }
 
     // Generate a token
-    const token = jwt.sign({ userId: user.id, login: user.login }, JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { userId: user.id, login: user.login },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
 
     res.status(200).json({ message: "Login successful", token });
   } catch (error) {
@@ -148,13 +102,6 @@ router.post("/login", async (req, res) => {
 });
 
 /**
- * @swagger
- * securityDefinitions:
- *   BearerAuth:
- *     type: apiKey
- *     in: header
- *     name: Authorization
- *
  * @swagger
  * /any-protected-route:
  *   get:
@@ -173,6 +120,7 @@ router.post("/login", async (req, res) => {
  *                 message:
  *                   type: string
  */
+
 const authenticate = (req, res, next) => {
   const token =
     req.headers.authorization && req.headers.authorization.split(" ")[1];
@@ -181,7 +129,7 @@ const authenticate = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
   } catch (error) {
